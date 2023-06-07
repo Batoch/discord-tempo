@@ -4,6 +4,11 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { TOKEN } = require('./config.json');
 const edf_tempo = require('edf-tempo');
+const Colors = {
+	Red: "TEMPO_ROUGE",
+	White: "TEMPO_BLANC",
+	Blue: "TEMPO_BLEU"
+}
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -36,7 +41,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction, client);
+		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
@@ -56,16 +61,30 @@ new cronJob("10 06 * * *", function() {
 
 new cronJob("00 20 * * *", function() {
     // Everyday at 8PM
-	refreshstatus()
+	try { const optinusers = require('./optinusers.json'); } catch (e) {optinusers = []}
+	edf_tempo.gettodaycolor().then((value) => {
+		refreshstatus(value)
+		sendmessagetousers(optinusers, value.couleurJourJ1)
+	});
 }, null, true);
 
-function refreshstatus(){
-	edf_tempo.gettodaycolor().then((value) => {
+function refreshstatus(color){
 		client.user.setStatus("online")
-		client.user.setActivity(value.couleurJourJ);
-		if(value.couleurJourJ==TEMPO_ROUGE){
+		client.user.setActivity(color.couleurJourJ);
+		if(color.couleurJourJ==Colors.Red){
 			client.user.setStatus("dnd")
 		}
-		console.log('New value:' + value.couleurJourJ);
-	});
+		console.log('New value:' + color.couleurJourJ);
+}
+
+function sendmessagetousers(users, J1color){
+	for (var user in users) {
+		console.log(users[user])
+		if(J1color==Colors.Red){
+			client.users.send(users[user], 'Tomorrow is Red');
+		}
+		if(J1color==Colors.White){
+			client.users.send(users[user], 'Tomorrow is White');
+		}
+	}
 }

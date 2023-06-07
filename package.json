@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "cron": "^2.3.1",
+    "discord.js": "^14.11.0",
+    "edf-tempo": "github:Batoch/nodejs-edf-tempo",
+    "node-fetch-commonjs": "^3.2.4"
+  }
+}

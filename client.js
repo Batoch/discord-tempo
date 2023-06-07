@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { TOKEN } = require('./config.json');
+const edf_tempo = require('edf-tempo');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -20,8 +21,12 @@ for (const file of commandFiles) {
 }
 
 client.once(Events.ClientReady, () => {
-	console.log('Ready!');
-});
+	edf_tempo.gettodaycolor().then((value) => {
+		client.user.setStatus("online")
+		client.user.setActivity(value.couleurJourJ);
+		console.log('Ready!');
+	});
+})
 
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;

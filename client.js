@@ -36,7 +36,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, client);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
@@ -49,6 +49,23 @@ client.on(Events.InteractionCreate, async interaction => {
 
 client.login(TOKEN);
 
-new cronJob("00 00 7 * * 0", function() {
-    // insert code to run here...
+new cronJob("10 06 * * *", function() {
+    // Everyday at 6:10AM
+	refreshstatus()
 }, null, true);
+
+new cronJob("00 20 * * *", function() {
+    // Everyday at 8PM
+	refreshstatus()
+}, null, true);
+
+function refreshstatus(){
+	edf_tempo.gettodaycolor().then((value) => {
+		client.user.setStatus("online")
+		client.user.setActivity(value.couleurJourJ);
+		if(value.couleurJourJ==TEMPO_ROUGE){
+			client.user.setStatus("dnd")
+		}
+		console.log('New value:' + value.couleurJourJ);
+	});
+}

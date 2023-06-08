@@ -15,7 +15,7 @@ npm install
 Start the serveur:
 
 ```shell
-npm run
+npm start
 ```
 
 ### Using Docker
@@ -30,4 +30,23 @@ docker run -d --restart=on-failure --name discordtempo -e TOKEN='TOKENVALUE' ghc
 
 ```shell
 docker run -d --restart=on-failure --name discordtempo -e TOKEN='TOKENVALUE' ghcr.io/batoch/discord-tempo/discordtempo:arm-latest
+```
+
+#### Configuration
+
+To use '/' commands, you need to use the deploy-commands.js file.
+
+```shell
+npm deploy
+```
+
+You need to provide informations about the server you want to deploy on.
+Example config.json file:
+
+```json
+{
+    "TOKEN": "",
+    "CLIENTID": "",
+    "GUILDID": ""
+}
 ```

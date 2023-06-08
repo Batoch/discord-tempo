@@ -4,7 +4,8 @@
   "description": "A simple bot capable of notifying users every day if the next day is not 'blue' on the EDF electricity delivery system.",
   "main": "client.js",
   "scripts": {
-    "start": "node client.js"
+    "start": "node client.js",
+    "deploy": "node deploy-commands.js"
   },
   "dependencies": {
     "cron": "^2.3.1",

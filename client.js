@@ -2,7 +2,12 @@ var cronJob = require("cron").CronJob;
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { TOKEN } = require('./config.json');
+var TOKEN
+if(process.env.TOKEN != undefined){TOKEN = process.env.TOKEN}
+else{
+	console.log("Getting Token from config.json")
+	try { TOKEN = require('./config.json').TOKEN; } catch (e) {return console.error("File config.json not found");}
+}
 const edf_tempo = require('edf-tempo');
 const Colors = {
 	Red: "TEMPO_ROUGE",

@@ -1,8 +1,25 @@
 {
+  "name": "discordtempo",
+  "version": "1.0.0",
+  "description": "A simple bot capable of notifying users every day if the next day is not 'blue' on the EDF electricity delivery system.",
+  "main": "client.js",
+  "scripts": {
+    "start": "node client.js",
+  },
   "dependencies": {
     "cron": "^2.3.1",
     "discord.js": "^14.11.0",
     "edf-tempo": "github:Batoch/nodejs-edf-tempo",
     "node-fetch-commonjs": "^3.2.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Batoch/discord-tempo.git"
+  },
+  "author": "Batoch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Batoch/discord-tempo/issues"
+  },
+  "homepage": "https://github.com/Batoch/discord-tempo#readme"
 }

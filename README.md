@@ -37,7 +37,7 @@ docker run -d --restart=on-failure --name discordtempo -e TOKEN='TOKENVALUE' ghc
 To use '/' commands, you need to use the deploy-commands.js file.
 
 ```shell
-npm deploy
+npm run deploy
 ```
 
 You need to provide informations about the server you want to deploy on.

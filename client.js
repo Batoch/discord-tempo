@@ -2,7 +2,8 @@ var cronJob = require("cron").CronJob;
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-try { const optinusers = require('optinusers.json'); } catch (e) {optinusers = []; console.error("File optinusers.json not found");}
+var optinusers
+try { optinusers = require('./optinusers.json'); } catch (e) {optinusers = []; console.error("File optinusers.json not found");}
 var TOKEN
 if(process.env.TOKEN != undefined){TOKEN = process.env.TOKEN}
 else{

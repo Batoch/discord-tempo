@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
-try { const optinusers = require('../optinusers.json'); } catch (e) {optinusers = []; console.error("File optinusers.json not found");}
 
 module.exports = {
 	data: new SlashCommandBuilder()

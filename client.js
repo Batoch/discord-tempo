@@ -34,7 +34,7 @@ for (const file of commandFiles) {
 client.once(Events.ClientReady, () => {
 	edf_tempo.gettodaycolor().then((value) => {
 		client.user.setStatus("online")
-		client.user.setActivity(value.couleurJourJ);
+		client.user.setActivity(value.couleurJourJ.split("TEMPO_")[1]);
 		console.log('Ready!');
 	});
 })

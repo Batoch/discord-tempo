@@ -42,4 +42,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm/v7
           push: true
-          tags: Batoch/discordtempo:latest
+          tags: batoch/discordtempo:latest

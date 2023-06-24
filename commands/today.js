@@ -10,6 +10,5 @@ module.exports = {
 		edf_tempo.gettodaycolor().then((value) => {
 			return interaction.reply({ content: value.couleurJourJ, ephemeral: true });
 		  });
-		
 	},
 };

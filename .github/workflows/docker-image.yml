@@ -67,7 +67,7 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           
       - name: Build image for amd64
-        run: docker buildx build . --file Dockerfile --tag $IMAGE_NAME --platform=linux/amd64 --load
+        run: docker buildx build . --file Dockerfile --tag $IMAGE_NAME --platform=linux/amd64,linux/arm/v7 --load
         
         
       - name: Push image
@@ -84,7 +84,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=amd64-latest
+          [ "$VERSION" == "main" ] && VERSION=latest
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION

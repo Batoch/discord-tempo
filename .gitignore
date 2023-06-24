@@ -1,6 +1,6 @@
 #conf
 config.json
-optinusers.json
+data/*
 
 # Logs
 logs

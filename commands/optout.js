@@ -12,7 +12,7 @@ module.exports = {
         }
         optinusers.splice(optinusers.indexOf(interaction.member.user.id), 1);
 
-        fs.writeFile('optinusers.json', JSON.stringify(optinusers, null, 2), (err) => {
+        fs.writeFile('data/optinusers.json', JSON.stringify(optinusers, null, 2), (err) => {
             if (err) throw err;
             console.log('User removed: ' + interaction.member.user.id);
         });

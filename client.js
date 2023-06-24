@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 var optinusers
-try { optinusers = require('./optinusers.json'); } catch (e) {optinusers = []; console.error("File optinusers.json not found");}
+try { optinusers = require('./data/optinusers.json'); } catch (e) {optinusers = []; console.error("File data/optinusers.json not found");}
 var TOKEN
 if(process.env.TOKEN != undefined){TOKEN = process.env.TOKEN}
 else{
@@ -48,7 +48,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, optinusers);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
@@ -68,7 +68,7 @@ new cronJob("10 06 * * *", function() {
 
 new cronJob("00 20 * * *", function() {
     // Everyday at 8PM
-	try { const optinusers = require('./optinusers.json'); } catch (e) {optinusers = []}
+	try { const optinusers = require('./data/optinusers.json'); } catch (e) {optinusers = []}
 	edf_tempo.gettodaycolor().then((value) => {
 		refreshstatus(value)
 		sendmessagetousers(optinusers, value.couleurJourJ1)

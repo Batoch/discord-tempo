@@ -1,0 +1,19 @@
+version: "1.0"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    hostname: discordtempo
+    restart: always
+    container_name: discordtempo_container
+    command: npm start
+    volumes:
+      - ./data:/data
+    networks:
+      - discordtempo
+networks:
+  discordtempo:
+    driver: bridge

@@ -20,16 +20,10 @@ npm start
 
 ### Using Docker
 
-#### For X86 based systems
+#### For X86 and ARM based systems
 
 ```shell
-docker run -d --restart=on-failure --name discordtempo -e TOKEN='TOKENVALUE' ghcr.io/batoch/discord-tempo/discordtempo:amd64-latest
-```
-
-#### For ARM based systems
-
-```shell
-docker run -d --restart=on-failure --name discordtempo -e TOKEN='TOKENVALUE' ghcr.io/batoch/discord-tempo/discordtempo:arm-latest
+docker run -d --restart=on-failure --name discordtempo --mount source=VOLNAME,target=/usr/src/app/data -e TOKEN='TOKENVALUE' ghcr.io/batoch/discordtempo:latest
 ```
 
 #### Configuration
@@ -40,7 +34,7 @@ To use '/' commands, you need to use the deploy-commands.js file.
 npm run deploy
 ```
 
-You need to provide informations about the server you want to deploy on.
+You need to provide informations about the server you want to deploy on (telling Discord which / commands you can use).
 Example config.json file:
 
 ```json

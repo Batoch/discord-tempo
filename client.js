@@ -77,7 +77,7 @@ new cronJob("00 20 * * *", function() {
 
 function refreshstatus(color){
 		client.user.setStatus("online")
-		client.user.setActivity(color.couleurJourJ);
+		client.user.setActivity(value.couleurJourJ.split("TEMPO_")[1]);
 		if(color.couleurJourJ==Colors.Red){
 			client.user.setStatus("dnd")
 		}

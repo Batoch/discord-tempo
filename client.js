@@ -35,7 +35,7 @@ for (const file of commandFiles) {
 client.once(Events.ClientReady, () => {
 	edf_tempo.getdaycolor().then((value) => {
 		client.user.setStatus("online")
-		client.user.setActivity(value.couleurJourJ.split("TEMPO_")[1]);
+		client.user.setActivity(value.split("TEMPO_")[1]);
 		console.log('Ready!');
 	});
 })
@@ -71,17 +71,19 @@ new cronJob("00 20 * * *", function() {
 	try { const optinusers = require('./data/optinusers.json'); } catch (e) {optinusers = []}
 	edf_tempo.getdaycolor().then((value) => {
 		refreshstatus(value)
-		sendmessagetousers(optinusers, value.couleurJourJ1)
+	});
+	edf_tempo.getdaycolor(edf_tempo.getday(1)).then((value) => {
+		sendmessagetousers(optinusers, value)
 	});
 }, null, true);
 
 function refreshstatus(color){
 		client.user.setStatus("online")
-		client.user.setActivity(value.couleurJourJ.split("TEMPO_")[1]);
-		if(color.couleurJourJ==Colors.Red){
+		client.user.setActivity(value.split("TEMPO_")[1]);
+		if(color==Colors.Red){
 			client.user.setStatus("dnd")
 		}
-		console.log('New value:' + color.couleurJourJ);
+		console.log('New value:' + color);
 }
 
 function sendmessagetousers(users, J1color){

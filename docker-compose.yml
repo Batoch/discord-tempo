@@ -11,7 +11,7 @@ services:
     container_name: discordtempo_container
     command: npm start
     volumes:
-      - ./data:/data
+      - ./data:/usr/src/app/data
     networks:
       - discordtempo
 networks:

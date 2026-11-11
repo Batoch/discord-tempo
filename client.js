@@ -1,7 +1,9 @@
-var cronJob = require("cron").CronJob;
+const { CronJob } = require('cron');
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
+const edf_tempo = require('edf-tempo');
+
 var optinusers
 try { optinusers = require('./data/optinusers.json'); } catch (e) {optinusers = []; console.error("File data/optinusers.json not found");}
 var TOKEN
@@ -10,11 +12,17 @@ else{
 	console.log("Getting Token from config.json")
 	try { TOKEN = require('./config.json').TOKEN; } catch (e) {return console.error("File config.json not found");}
 }
-const edf_tempo = require('edf-tempo');
+
 const Colors = {
 	Red: "TEMPO_ROUGE",
 	White: "TEMPO_BLANC",
-	Blue: "TEMPO_BLEU"
+	Blue: "TEMPO_BLEU",
+	Unknown: edf_tempo.UNKNOWN
+}
+
+// Options passed to edf-tempo: log each failed attempt
+const tempoOptions = {
+	onError: (error, attempt) => console.warn(`EDF Tempo API attempt ${attempt} failed: ${error.message}`)
 }
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -32,12 +40,9 @@ for (const file of commandFiles) {
     }
 }
 
-client.once(Events.ClientReady, () => {
-	edf_tempo.getdaycolor().then((value) => {
-		client.user.setStatus("online")
-		client.user.setActivity(value.split("TEMPO_")[1]);
-		console.log('Ready!');
-	});
+client.once(Events.ClientReady, async () => {
+	console.log('Ready!');
+	await refreshstatus();
 })
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -51,49 +56,63 @@ client.on(Events.InteractionCreate, async interaction => {
 		await command.execute(interaction, optinusers);
 	} catch (error) {
 		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+		if (interaction.deferred && !interaction.replied) {
+			await interaction.editReply({ content: 'There was an error while executing this command!' });
+		} else if (interaction.replied) {
+			await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 		}
 	}
 });
 
 client.login(TOKEN);
 
-new cronJob("10 06 * * *", function() {
-    // Everyday at 6:10AM
+// Tempo days follow the French calendar (a Tempo day starts at 6AM, Paris time)
+new CronJob("10 06 * * *", function() {
+	// Everyday at 6:10AM
 	refreshstatus()
-}, null, true);
+}, null, true, "Europe/Paris");
 
-new cronJob("00 20 * * *", function() {
-    // Everyday at 8PM
-	try { const optinusers = require('./data/optinusers.json'); } catch (e) {optinusers = []}
-	edf_tempo.getdaycolor().then((value) => {
-		refreshstatus(value)
-	});
-	edf_tempo.getdaycolor(edf_tempo.getday(1)).then((value) => {
-		sendmessagetousers(optinusers, value)
-	});
-}, null, true);
+new CronJob("00 20 * * *", async function() {
+	// Everyday at 8PM
+	await refreshstatus()
+	try {
+		const J1color = await edf_tempo.getdaycolor(edf_tempo.getday(1), tempoOptions);
+		sendmessagetousers(optinusers, J1color)
+	} catch (error) {
+		console.error("Unable to get tomorrow's color: " + error.message);
+	}
+}, null, true, "Europe/Paris");
 
-function refreshstatus(color){
-		client.user.setStatus("online")
-		client.user.setActivity(value.split("TEMPO_")[1]);
-		if(color==Colors.Red){
-			client.user.setStatus("dnd")
-		}
-		console.log('New value:' + color);
+async function refreshstatus(){
+	let color
+	try {
+		color = await edf_tempo.getdaycolor(edf_tempo.getday(), tempoOptions);
+	} catch (error) {
+		console.error("Unable to get today's color: " + error.message);
+		return;
+	}
+	client.user.setStatus(color == Colors.Red ? "dnd" : "online")
+	client.user.setActivity(color.split("TEMPO_")[1]);
+	console.log('New value: ' + color);
 }
 
 function sendmessagetousers(users, J1color){
-	for (var user in users) {
-		console.log(users[user])
-		if(J1color==Colors.Red){
-			client.users.send(users[user], 'Tomorrow is Red');
-		}
-		if(J1color==Colors.White){
-			client.users.send(users[user], 'Tomorrow is White');
-		}
+	let message
+	if(J1color==Colors.Red){
+		message = 'Tomorrow is Red';
+	}
+	else if(J1color==Colors.White){
+		message = 'Tomorrow is White';
+	}
+	else{
+		return;
+	}
+	for (const user of users) {
+		console.log(user)
+		client.users.send(user, message).catch((error) => {
+			console.error(`Unable to send a message to ${user}: ${error.message}`);
+		});
 	}
 }

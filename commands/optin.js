@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
@@ -16,10 +16,10 @@ module.exports = {
         }
         console.log(optinusers)
         
-        if(optinusers.includes(interaction.member.user.id)){
-            return interaction.reply({ content: "Already in", ephemeral: true });
+        if(optinusers.includes(interaction.user.id)){
+            return interaction.reply({ content: "Already in", flags: MessageFlags.Ephemeral });
         }
-        optinusers.push(interaction.member.user.id);
+        optinusers.push(interaction.user.id);
 
         // Ensure the folder data exist
         if (!fs.existsSync('data')) {
@@ -28,8 +28,8 @@ module.exports = {
         
         fs.writeFile('data/optinusers.json', JSON.stringify(optinusers, null, 2), (err) => {
             if (err) throw err;
-            console.log('New user added: ' + interaction.member.user.id);
+            console.log('New user added: ' + interaction.user.id);
         });
-        return interaction.reply({ content: "Added in", ephemeral: true });
+        return interaction.reply({ content: "Added in", flags: MessageFlags.Ephemeral });
 	},
 };

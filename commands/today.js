@@ -1,14 +1,14 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const edf_tempo = require('edf-tempo');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('today')
 		.setDescription("Show today's color."),
-		// .addIntegerOption(option => option.setName('amount').setDescription('exempleint')),
 	async execute(interaction) {
-		edf_tempo.gettodaycolor().then((value) => {
-			return interaction.reply({ content: value.couleurJourJ, ephemeral: true });
-		  });
+		// The API may retry for a while: acknowledge the interaction first
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		const color = await edf_tempo.getdaycolor(edf_tempo.getday(), { retries: 3, retryDelay: 2000 });
+		return interaction.editReply({ content: color });
 	},
 };

@@ -10,7 +10,7 @@
   "dependencies": {
     "cron": "^4.4.0",
     "discord.js": "^14.28.1",
-    "edf-tempo": "github:Batoch/nodejs-edf-tempo#V2.0"
+    "edf-tempo": "github:Batoch/nodejs-edf-tempo#V2.1"
   },
   "repository": {
     "type": "git",
